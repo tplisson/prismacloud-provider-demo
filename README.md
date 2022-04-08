@@ -29,7 +29,7 @@ tom-az-lab-hierarchy
             └── tom-az-sub-test3
 ```
 
-Provider Configuration
+[Provider Configuration](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs)
 ```yaml
 terraform {
   required_providers {
