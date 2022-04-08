@@ -45,7 +45,7 @@ provider "prismacloud" {
 }
 ```
 
-Account Group
+[Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
 ```yaml
 resource "prismacloud_account_group" "tom-az-root-group" {
   name = "tom-az-root-group"
@@ -58,7 +58,7 @@ resource "prismacloud_account_group" "tom-az-root-group" {
 }
 ```
 
-Nested Account Group
+[Nested Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
 ```yaml
 resource "prismacloud_account_group" "tom-az-mg-dev" {
     name = "tom-az-mg-dev"
@@ -71,7 +71,7 @@ resource "prismacloud_account_group" "tom-az-mg-dev" {
 }
 ```
 
-User Role
+[User Role](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/user_role)
 ```yaml
 resource "prismacloud_user_role" "tom-role-az-mg-test" {
   name              = "tom-role-az-mg-test"
@@ -81,7 +81,7 @@ resource "prismacloud_user_role" "tom-role-az-mg-test" {
 }
 ```
 
-Alert Rule
+[Alert Rule](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/alert_rule)
 ```yaml
 resource "prismacloud_alert_rule" "tom-alert-az-rg-locations" {
   name = "tom-alert-az-rg-locations"
