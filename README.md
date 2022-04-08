@@ -1,7 +1,10 @@
 # prismacloud-provider-test
 
+Testing the Terraform provider for the Palo Alto Networks Prisma Cloud platform.
+https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest
 
-Hierarchy of Azure Managment Groups 
+
+Hierarchy of Azure Managment Groups in lab environment
 ```
 .
 tom-az-lab-hierarchy
