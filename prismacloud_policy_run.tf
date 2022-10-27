@@ -5,9 +5,9 @@ resource "prismacloud_policy" "run_policy_001" {
   name        = "run_policy_001: a custom run policy created with terraform"
   severity = "low"
   labels      = ["tplisson", "custom"]
-  description = "[Tom] CPSM: Ensure Azure AKS enable role-based access control (RBAC) is enforced"
+  description = "run_policy_001: a custom run policy created with terraform"
   rule {
-    name     = "tom-aks-cluster is stopped"
+    name     = "run_policy_001: a custom run policy created with terraform"
     criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
     parameters = {
       savedSearch = "false"

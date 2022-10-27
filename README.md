@@ -4,6 +4,82 @@ Testing the Terraform provider for the Palo Alto Networks Prisma Cloud platform.
 https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest
 
 
+#### [Provider Configuration](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs)
+```hcl
+terraform {
+  required_providers {
+    prismacloud = {
+      source  = "PaloAltoNetworks/prismacloud"
+      version = ">=1.2.9"
+    }
+  }
+}
+# Configure the prismacloud provider
+provider "prismacloud" {
+    json_config_file = ".prismacloud_auth.json"
+}
+```
+
+Remplace the variables in the `.prismacloud_auth.json` file with your API keys:
+```json
+{
+    "url" : "<PRISMA_CLOUD_API_URL",
+    "username" : "<PRISMA_CLOUD_ACCESS_KEY>",
+    "password" : "<PRISMA_CLOUD_ACCESS_SECRET>"
+}
+```
+
+#### [Custom Build Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
+```hcl
+resource "prismacloud_policy" "build_policy_001" {
+  name        = "build_policy_001: a custom build policy created with terraform"
+  policy_type = "config"
+  cloud_type  = "azure"
+  severity    = "high"
+  description = "this describes the policy"
+  rule {
+    name = "build_policy_001: a custom build policy created with terraform"
+    parameters = {
+      "savedSearch" : false,
+      "withIac" : true,
+    }
+    rule_type = "Config"
+    children {
+      type           = "build"
+      recommendation = "fix it"
+      metadata = {
+        "code" : file("build_policy.yaml"),
+      }
+    }
+  }
+} 
+```
+
+#### [Custom Run Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
+```hcl
+resource "prismacloud_policy" "run_policy_001" {
+  policy_type = "config"
+  cloud_type  = "azure"
+  name        = "run_policy_001: a custom run policy created with terraform"
+  severity = "low"
+  labels      = ["tplisson", "custom"]
+  description = "[Tom] CPSM: Ensure Azure AKS enable role-based access control (RBAC) is enforced"
+  rule {
+    name     = "tom-aks-cluster is stopped"
+    criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
+    parameters = {
+      savedSearch = "false"
+      withIac     = "false"
+    }
+    rule_type = "Config"
+  }
+}
+```
+
+
+
+#### [Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
+
 Hierarchy of Azure Managment Groups in lab environment
 ```
 .
@@ -32,24 +108,8 @@ tom-az-lab-hierarchy
             └── tom-az-sub-test3
 ```
 
-[Provider Configuration](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs)
-```yaml
-terraform {
-  required_providers {
-    prismacloud = {
-      source  = "PaloAltoNetworks/prismacloud"
-      version = ">=1.0.0"
-    }
-  }
-}
-# Configure the prismacloud provider
-provider "prismacloud" {
-    json_config_file = ".prismacloud_auth.json"
-}
-```
 
-[Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
-```yaml
+```hcl
 resource "prismacloud_account_group" "tom-az-root-group" {
   name = "tom-az-root-group"
   description = "Tom Plisson's TF lab environment -- Tenant Root Group"
@@ -61,8 +121,8 @@ resource "prismacloud_account_group" "tom-az-root-group" {
 }
 ```
 
-[Nested Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
-```yaml
+#### [Nested Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
+```hcl
 resource "prismacloud_account_group" "tom-az-mg-dev" {
     name = "tom-az-mg-dev"
     description = "Tom Plisson's TF lab environment -- MG Dev"
@@ -74,8 +134,8 @@ resource "prismacloud_account_group" "tom-az-mg-dev" {
 }
 ```
 
-[User Role](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/user_role)
-```yaml
+#### [User Role](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/user_role)
+```hcl
 resource "prismacloud_user_role" "tom-role-az-mg-test" {
   name              = "tom-role-az-mg-test"
   description       = "Made by Terraform"
@@ -84,8 +144,8 @@ resource "prismacloud_user_role" "tom-role-az-mg-test" {
 }
 ```
 
-[Alert Rule](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/alert_rule)
-```yaml
+#### [Alert Rule](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/alert_rule)
+```hcl
 resource "prismacloud_alert_rule" "tom-alert-az-rg-locations" {
   name = "tom-alert-az-rg-locations"
   target {
