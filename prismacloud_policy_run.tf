@@ -4,8 +4,8 @@ resource "prismacloud_policy" "run_policy_001" {
   cloud_type  = "azure"
   name        = "run_policy_001: a custom run policy created with terraform"
   severity = "low"
-  labels      = ["tplisson", "custom"]
-  description = "run_policy_001: a custom run policy created with terraform"
+  labels      = ["some_tag"]
+  description = "this describes the policy"
   rule {
     name     = "run_policy_001: a custom run policy created with terraform"
     criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
