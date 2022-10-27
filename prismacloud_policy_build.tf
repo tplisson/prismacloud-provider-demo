@@ -3,7 +3,8 @@ resource "prismacloud_policy" "build_policy_001" {
   name        = "build_policy_001: a custom build policy created with terraform"
   policy_type = "config"
   cloud_type  = "azure"
-  severity    = "high"
+  severity    = "low"
+  labels      = ["some_tag"]
   description = "this describes the policy"
   rule {
     name = "build_policy_001: a custom build policy created with terraform"
@@ -26,7 +27,7 @@ resource "prismacloud_policy" "build_policy_001" {
 #   name        = "build_policy_002: another custom build policy created with terraform"
 #   policy_type = "config"
 #   cloud_type  = "aws"
-#   severity    = "high"
+#   severity    = "low"
 #   description = "this describes the policy"
 #   rule {
 #     name = "build_policy_002: another custom build policy created with terraform"
