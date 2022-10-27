@@ -1,9 +1,9 @@
 # Configure a custom run policy for Azure 
 resource "prismacloud_policy" "run_policy_001" {
+  name        = "run_policy_001: a custom run policy created with terraform"
   policy_type = "config"
   cloud_type  = "azure"
-  name        = "run_policy_001: a custom run policy created with terraform"
-  severity = "low"
+  severity    = "low"
   labels      = ["some_tag"]
   description = "this describes the policy"
   rule {

@@ -21,13 +21,13 @@ resource "prismacloud_policy" "build_policy_001" {
       }
     }
   }
-} 
+}
 
 # resource "prismacloud_policy" "tf_policy_code" {
 #   name        = "build_policy_002: another custom build policy created with terraform"
 #   policy_type = "config"
 #   cloud_type  = "aws"
-#   severity    = "low"
+#   severity    = "high"
 #   description = "this describes the policy"
 #   rule {
 #     name = "build_policy_002: another custom build policy created with terraform"
