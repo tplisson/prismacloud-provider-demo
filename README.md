@@ -1,4 +1,4 @@
-# Palo Alto Networks Prisma Cloud Terraform Provider Demo
+# Prisma Cloud Terraform Provider Demo
 
 Testing the Terraform provider for the Palo Alto Networks Prisma Cloud platform.
 https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest
