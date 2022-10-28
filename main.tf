@@ -114,6 +114,51 @@ resource "prismacloud_policy" "run_policy_002" {
   }
 }
 
+# Configure a custom run policy from a saved RQL search
+resource "prismacloud_policy" "run_policy_003" {
+  name        = "run_policy_003: custom run policy #3 created with terraform"
+  policy_type = "config"
+  cloud_type  = "azure"
+  severity    = "low"
+  labels      = ["some_tag"]
+  description = "this describes the policy"
+  enabled     = false
+  rule {
+    name      = "run_policy_003: custom run policy #3 created with terraform"
+    rule_type = "Config"
+    parameters = {
+      savedSearch = true
+      withIac     = false
+    }
+    criteria = file("policies/aks/aks001.rql")
+  }
+}
+
+
+resource "prismacloud_saved_search" "run_policy_003" {
+  name        = "run_policy_003"
+  description = "run_policy_003: saved RQL search"
+  search_id   = prismacloud_rql_search.rql.search_id
+  query       = prismacloud_rql_search.rql.query
+  time_range {
+    relative {
+      unit   = prismacloud_rql_search.rql.time_range.0.relative.0.unit
+      amount = prismacloud_rql_search.rql.time_range.0.relative.0.amount
+    }
+  }
+}
+
+resource "prismacloud_rql_search" "rql" {
+  search_type = "config"
+  query       = "config from cloud.resource where api.name = 'azure-kubernetes-cluster' AND json.rule = 'name contains tom-aks-cluster and properties.enableRBAC is true'"
+  time_range {
+    relative {
+      unit   = "hour"
+      amount = 24
+    }
+  }
+}
+
 #### Prisma Cloud Account Groups ####################################
 
 
