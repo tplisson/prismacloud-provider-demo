@@ -1,0 +1,23 @@
+---
+metadata:
+  name: "build_policy_222: a custom build policy created with terraform"
+  guidelines: "build_policy_001: a custom build policy created with terraform"
+  category: general
+  severity: high
+scope:
+  provider: azure
+definition:
+  and:
+    - cond_type: attribute
+      resource_types: 
+      - azurerm_kubernetes_cluster
+      attribute: azure_active_directory_role_based_access_control
+      operator: exists
+    - cond_type: attribute
+      resource_types: 
+      - azurerm_kubernetes_cluster
+      attribute: azure_active_directory_role_based_access_control.azure_rbac_enabled
+      operator: is_true
+
+
+# metadata:\n  name: "build_policy_001: a custom build policy created with terraform"\n  guidelines: "build_policy_001: a custom build policy created with terraform"\n  category: general\n  severity: high\nscope:\n  provider: azure\ndefinition:\n  and:\n    - cond_type: attribute\n      resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control\n      operator: exists\n    - cond_type: attribute\n     resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control.azure_rbac_enabled\n      operator: is_true

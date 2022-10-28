@@ -39,16 +39,16 @@ resource "prismacloud_policy" "build_policy" {
   description = "this describes the policy"
   rule {
     name = "sample custom build policy created with terraform"
-    parameters = {
-      "savedSearch" : false,
-      "withIac" : true,
-    }
     rule_type = "Config"
+    parameters = {
+      savedSearch = false
+      withIac     = true
+    }
     children {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        "code" : file("folder/build_policy.yaml"),
+        code = file("folder/build_policy.yaml"),
       }
     }
   }
@@ -66,12 +66,12 @@ resource "prismacloud_policy" "run_policy" {
   description = "sample custom run policy created with terraform"
   rule {
     name     = "sample custom run policy created with terraform"
-    criteria = file("folder/run_policy.rql")
-    parameters = {
-      savedSearch = "false"
-      withIac     = "false"
-    }
     rule_type = "Config"
+    parameters = {
+      savedSearch = false
+      withIac     = false
+    }
+    criteria = file("folder/run_policy.rql")
   }
 }
 ```
