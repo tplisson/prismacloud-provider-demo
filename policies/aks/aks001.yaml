@@ -1,7 +1,7 @@
 ---
 metadata:
-  name: "build_policy_222: a custom build policy created with terraform"
-  guidelines: "build_policy_001: a custom build policy created with terraform"
+  name: "build_policy_001: a custom build policy created with terraform"
+  guidelines: "fix it"
   category: general
   severity: high
 scope:

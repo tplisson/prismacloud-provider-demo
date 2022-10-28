@@ -21,7 +21,7 @@ provider "prismacloud" {
 
 #### Prisma Cloud Custom Policies ####################################
 
-# Configure a custom build policy from a one liner YAML code definition
+# Configure a custom build policy from a local file
 resource "prismacloud_policy" "build_policy_001" {
   name        = "build_policy_001: custom build policy #1 created with terraform"
   policy_type = "config"
@@ -31,45 +31,47 @@ resource "prismacloud_policy" "build_policy_001" {
   description = "this describes the policy"
   enabled     = false
   rule {
-    name = "build_policy_001: custom build policy #1 created with terraform"
+    name      = "build_policy_001: custom build policy #1 created with terraform"
     rule_type = "Config"
     parameters = {
-      "savedSearch" : false,
-      "withIac" : true,
+      savedSearch = false
+      withIac     = true
     }
     children {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        "code" : "metadata:\n  name: 'build_policy_002: a custom build policy created with terraform'\n  guidelines: 'build_policy_001: a custom build policy created with terraform'\n  category: general\n  severity: high\nscope:\n  provider: azure\ndefinition:\n  and:\n    - cond_type: attribute\n      resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control\n      operator: exists\n    - cond_type: attribute\n     resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control.azure_rbac_enabled\n      operator: is_true",
+        "code" : file("policies/aks/aks001.yaml")
       }
     }
   }
 }
 
-# Configure a custom build policy from a local file
+# Configure a custom build policy from a one liner YAML code definition
 resource "prismacloud_policy" "build_policy_002" {
   name        = "build_policy_002: custom build policy #2 created with terraform"
   policy_type = "config"
   cloud_type  = "azure"
   severity    = "low"
+  labels      = ["some_tag"]
   description = "this describes the policy"
+  enabled     = false
   rule {
-    name = "build_policy_002: custom build policy #2 created with terraform"
-    parameters = {
-      "savedSearch" : false,
-      "withIac" : true,
-    }
+    name      = "build_policy_002: custom build policy #1 created with terraform"
     rule_type = "Config"
+    parameters = {
+      savedSearch = false
+      withIac     = true
+    }
     children {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        "code" : file("policies/aks/aks001.yaml"),
+        "code" : "---\nmetadata:\n  name: \"build_policy_002: a custom build policy created with terraform\"\n  guidelines: \"fix it\"\n  category: general\n  severity: high\nscope:\n  provider: azure\ndefinition:\n  and:\n    - cond_type: attribute\n      resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control\n      operator: exists\n    - cond_type: attribute\n      resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control.azure_rbac_enabled\n      operator: is_true\n",
       }
     }
   }
-} 
+}
 
 
 # Configure a custom run policy from a one liner RQL code definition

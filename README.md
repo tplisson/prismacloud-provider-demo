@@ -48,7 +48,7 @@ resource "prismacloud_policy" "build_policy" {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        code = file("folder/build_policy.yaml"),
+        code =` file("folder/build_policy.yaml"),
       }
     }
   }
