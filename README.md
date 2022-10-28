@@ -1,4 +1,4 @@
-# prismacloud-provider-test
+# Palo Alto Networks Prisma Cloud Terraform Provider Demo
 
 Testing the Terraform provider for the Palo Alto Networks Prisma Cloud platform.
 https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest
@@ -6,6 +6,7 @@ https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest
 
 #### [Provider Configuration](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs)
 ```hcl
+# Configure the prismacloud provider
 terraform {
   required_providers {
     prismacloud = {
@@ -14,13 +15,12 @@ terraform {
     }
   }
 }
-# Configure the prismacloud provider
 provider "prismacloud" {
     json_config_file = ".prismacloud_auth.json"
 }
 ```
 
-Remplace the variables in the `.prismacloud_auth.json` file with your API keys:
+Configure the authentication parameters in the `.prismacloud_auth.json` file with your API URL and keys:
 ```json
 {
     "url" : "<PRISMA_CLOUD_API_URL",
@@ -31,14 +31,14 @@ Remplace the variables in the `.prismacloud_auth.json` file with your API keys:
 
 #### [Custom Build Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
 ```hcl
-resource "prismacloud_policy" "build_policy_001" {
-  name        = "build_policy_001: a custom build policy created with terraform"
+resource "prismacloud_policy" "build_policy" {
+  name        = "sample custom build policy created with terraform"
   policy_type = "config"
   cloud_type  = "azure"
   severity    = "high"
   description = "this describes the policy"
   rule {
-    name = "build_policy_001: a custom build policy created with terraform"
+    name = "sample custom build policy created with terraform"
     parameters = {
       "savedSearch" : false,
       "withIac" : true,
@@ -48,7 +48,7 @@ resource "prismacloud_policy" "build_policy_001" {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        "code" : file("build_policy.yaml"),
+        "code" : file("folder/build_policy.yaml"),
       }
     }
   }
@@ -57,16 +57,16 @@ resource "prismacloud_policy" "build_policy_001" {
 
 #### [Custom Run Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
 ```hcl
-resource "prismacloud_policy" "run_policy_001" {
+resource "prismacloud_policy" "run_policy" {
   policy_type = "config"
   cloud_type  = "azure"
-  name        = "run_policy_001: a custom run policy created with terraform"
+  name        = "sample custom run policy created with terraform"
   severity = "low"
-  labels      = ["tplisson", "custom"]
-  description = "[Tom] CPSM: Ensure Azure AKS enable role-based access control (RBAC) is enforced"
+  labels      = ["some_tag"]
+  description = "sample custom run policy created with terraform"
   rule {
-    name     = "tom-aks-cluster is stopped"
-    criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
+    name     = "sample custom run policy created with terraform"
+    criteria = file("folder/run_policy.rql")
     parameters = {
       savedSearch = "false"
       withIac     = "false"
