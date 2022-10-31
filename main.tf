@@ -133,8 +133,6 @@ resource "prismacloud_policy" "run_policy_003" {
     criteria = prismacloud_saved_search.run_policy_003.id
   }
 }
-
-
 resource "prismacloud_saved_search" "run_policy_003" {
   name        = "run_policy_003"
   description = "run_policy_003: saved RQL search"
@@ -147,7 +145,6 @@ resource "prismacloud_saved_search" "run_policy_003" {
     }
   }
 }
-
 resource "prismacloud_rql_search" "run_policy_003" {
   search_type = "config"
   query       = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.addonProfiles.omsagent.config does not exist or properties.addonProfiles.omsagent.enabled is false"

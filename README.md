@@ -33,24 +33,26 @@ Configure the authentication parameters in the `.prismacloud_auth.json` file wit
 
 ##### Configure a custom build policy from a local file
 ```hcl
-resource "prismacloud_policy" "build_policy" {
-  name        = "sample custom build policy created with terraform"
+resource "prismacloud_policy" "build_policy_001" {
+  name        = "build_policy_001: custom build policy #1 created with terraform"
   policy_type = "config"
   cloud_type  = "azure"
-  severity    = "high"
+  severity    = "low"
+  labels      = ["some_tag"]
   description = "this describes the policy"
+  enabled     = false
   rule {
-    name = "sample custom build policy created with terraform"
+    name      = "build_policy_001: custom build policy #1 created with terraform"
     rule_type = "Config"
     parameters = {
-      "savedSearch" : false,
-      "withIac" : true,
+      savedSearch = false
+      withIac     = true
     }
     children {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        "code" : file("folder/build_policy.yaml"),
+        "code" : file("policies/aks/aks001.yaml")
       }
     }
   }
@@ -86,27 +88,97 @@ resource "prismacloud_policy" "build_policy_002" {
 ```
 
 #### [Custom Run Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
+
+
+##### Configure a custom run policy from a one liner RQL code definition
 ```hcl
-resource "prismacloud_policy" "run_policy" {
+resource "prismacloud_policy" "run_policy_001" {
+  name        = "run_policy_001: custom run policy #1 created with terraform"
   policy_type = "config"
   cloud_type  = "azure"
-  name        = "sample custom run policy created with terraform"
-  severity = "low"
+  severity    = "low"
   labels      = ["some_tag"]
-  description = "sample custom run policy created with terraform"
+  description = "this describes the policy"
+  enabled     = false
   rule {
-    name     = "sample custom run policy created with terraform"
+    name      = "run_policy_001: custom run policy #1 created with terraform"
     rule_type = "Config"
     parameters = {
-      savedSearch = "false"
-      withIac     = "false"
+      savedSearch = false
+      withIac     = false
     }
-    criteria = file("folder/run_policy.rql")
+    criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
+
+  }
+}
+```
+
+##### Configure a custom run policy from a local file
+```hcl
+resource "prismacloud_policy" "run_policy_002" {
+  name        = "run_policy_002: custom run policy #2 created with terraform"
+  policy_type = "config"
+  cloud_type  = "azure"
+  severity    = "low"
+  labels      = ["some_tag"]
+  description = "this describes the policy"
+  enabled     = false
+  rule {
+    name      = "run_policy_002: custom run policy #2 created with terraform"
+    rule_type = "Config"
+    parameters = {
+      savedSearch = false
+      withIac     = false
+    }
+    criteria = file("policies/aks/aks001.rql")
   }
 }
 ```
 
 
+##### Configure a custom run policy from a saved RQL search
+```hcl
+resource "prismacloud_policy" "run_policy_003" {
+  name        = "run_policy_003: custom run policy #3 created with terraform"
+  policy_type = "config"
+  cloud_type  = "azure"
+  severity    = "low"
+  labels      = ["some_tag"]
+  description = "this describes the policy"
+  enabled     = false
+  rule {
+    name      = "run_policy_003: custom run policy #3 created with terraform"
+    rule_type = "Config"
+    parameters = {
+      savedSearch = true
+      withIac     = false
+    }
+    criteria = prismacloud_saved_search.run_policy_003.id
+  }
+}
+resource "prismacloud_saved_search" "run_policy_003" {
+  name        = "run_policy_003"
+  description = "run_policy_003: saved RQL search"
+  search_id   = prismacloud_rql_search.run_policy_003.search_id
+  query       = prismacloud_rql_search.run_policy_003.query
+  time_range {
+    relative {
+      unit   = prismacloud_rql_search.run_policy_003.time_range.0.relative.0.unit
+      amount = prismacloud_rql_search.run_policy_003.time_range.0.relative.0.amount
+    }
+  }
+}
+resource "prismacloud_rql_search" "run_policy_003" {
+  search_type = "config"
+  query       = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.addonProfiles.omsagent.config does not exist or properties.addonProfiles.omsagent.enabled is false"
+  time_range {
+    relative {
+      unit   = "hour"
+      amount = 24
+    }
+  }
+}
+```
 
 #### [Account Group](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/account_group)
 
