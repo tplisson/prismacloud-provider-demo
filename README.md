@@ -30,6 +30,8 @@ Configure the authentication parameters in the `.prismacloud_auth.json` file wit
 ```
 
 #### [Custom Build Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
+
+##### Configure a custom build policy from a local file
 ```hcl
 resource "prismacloud_policy" "build_policy" {
   name        = "sample custom build policy created with terraform"
@@ -41,6 +43,34 @@ resource "prismacloud_policy" "build_policy" {
     name = "sample custom build policy created with terraform"
     rule_type = "Config"
     parameters = {
+      "savedSearch" : false,
+      "withIac" : true,
+    }
+    children {
+      type           = "build"
+      recommendation = "fix it"
+      metadata = {
+        "code" : file("folder/build_policy.yaml"),
+      }
+    }
+  }
+} 
+```
+
+##### Configure a custom build policy from a one liner YAML code definition
+```hcl
+resource "prismacloud_policy" "build_policy_002" {
+  name        = "build_policy_002: custom build policy #2 created with terraform"
+  policy_type = "config"
+  cloud_type  = "azure"
+  severity    = "low"
+  labels      = ["some_tag"]
+  description = "this describes the policy"
+  enabled     = false
+  rule {
+    name      = "build_policy_002: custom build policy #1 created with terraform"
+    rule_type = "Config"
+    parameters = {
       savedSearch = false
       withIac     = true
     }
@@ -48,11 +78,11 @@ resource "prismacloud_policy" "build_policy" {
       type           = "build"
       recommendation = "fix it"
       metadata = {
-        code =` file("folder/build_policy.yaml"),
+        "code" : "---\nmetadata:\n  name: \"build_policy_002: a custom build policy created with terraform\"\n  guidelines: \"fix it\"\n  category: general\n  severity: high\nscope:\n  provider: azure\ndefinition:\n  and:\n    - cond_type: attribute\n      resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control\n      operator: exists\n    - cond_type: attribute\n      resource_types: \n      - azurerm_kubernetes_cluster\n      attribute: azure_active_directory_role_based_access_control.azure_rbac_enabled\n      operator: is_true\n",
       }
     }
   }
-} 
+}
 ```
 
 #### [Custom Run Policy](https://registry.terraform.io/providers/PaloAltoNetworks/prismacloud/latest/docs/resources/policy)
@@ -68,8 +98,8 @@ resource "prismacloud_policy" "run_policy" {
     name     = "sample custom run policy created with terraform"
     rule_type = "Config"
     parameters = {
-      savedSearch = false
-      withIac     = false
+      savedSearch = "false"
+      withIac     = "false"
     }
     criteria = file("folder/run_policy.rql")
   }

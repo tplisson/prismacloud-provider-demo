@@ -73,7 +73,6 @@ resource "prismacloud_policy" "build_policy_002" {
   }
 }
 
-
 # Configure a custom run policy from a one liner RQL code definition
 resource "prismacloud_policy" "run_policy_001" {
   name        = "run_policy_001: custom run policy #1 created with terraform"
@@ -84,13 +83,14 @@ resource "prismacloud_policy" "run_policy_001" {
   description = "this describes the policy"
   enabled     = false
   rule {
-    name     = "run_policy_001: custom run policy #1 created with terraform"
-    criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
+    name      = "run_policy_001: custom run policy #1 created with terraform"
+    rule_type = "Config"
     parameters = {
       savedSearch = false
       withIac     = false
     }
-    rule_type = "Config"
+    criteria = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.enableRBAC is false"
+
   }
 }
 
@@ -104,13 +104,13 @@ resource "prismacloud_policy" "run_policy_002" {
   description = "this describes the policy"
   enabled     = false
   rule {
-    name     = "run_policy_002: custom run policy #2 created with terraform"
-    criteria = file("policies/aks/aks001.rql")
+    name      = "run_policy_002: custom run policy #2 created with terraform"
+    rule_type = "Config"
     parameters = {
       savedSearch = false
       withIac     = false
     }
-    rule_type = "Config"
+    criteria = file("policies/aks/aks001.rql")
   }
 }
 
@@ -130,7 +130,7 @@ resource "prismacloud_policy" "run_policy_003" {
       savedSearch = true
       withIac     = false
     }
-    criteria = file("policies/aks/aks001.rql")
+    criteria = prismacloud_saved_search.run_policy_003.id
   }
 }
 
@@ -138,19 +138,19 @@ resource "prismacloud_policy" "run_policy_003" {
 resource "prismacloud_saved_search" "run_policy_003" {
   name        = "run_policy_003"
   description = "run_policy_003: saved RQL search"
-  search_id   = prismacloud_rql_search.rql.search_id
-  query       = prismacloud_rql_search.rql.query
+  search_id   = prismacloud_rql_search.run_policy_003.search_id
+  query       = prismacloud_rql_search.run_policy_003.query
   time_range {
     relative {
-      unit   = prismacloud_rql_search.rql.time_range.0.relative.0.unit
-      amount = prismacloud_rql_search.rql.time_range.0.relative.0.amount
+      unit   = prismacloud_rql_search.run_policy_003.time_range.0.relative.0.unit
+      amount = prismacloud_rql_search.run_policy_003.time_range.0.relative.0.amount
     }
   }
 }
 
-resource "prismacloud_rql_search" "rql" {
+resource "prismacloud_rql_search" "run_policy_003" {
   search_type = "config"
-  query       = "config from cloud.resource where api.name = 'azure-kubernetes-cluster' AND json.rule = 'name contains tom-aks-cluster and properties.enableRBAC is true'"
+  query       = "config from cloud.resource where cloud.type = 'azure' AND api.name = 'azure-kubernetes-cluster' AND json.rule =  properties.addonProfiles.omsagent.config does not exist or properties.addonProfiles.omsagent.enabled is false"
   time_range {
     relative {
       unit   = "hour"
@@ -158,6 +158,7 @@ resource "prismacloud_rql_search" "rql" {
     }
   }
 }
+
 
 #### Prisma Cloud Account Groups ####################################
 
